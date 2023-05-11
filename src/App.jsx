@@ -1,12 +1,15 @@
 import { Link, useLoaderData } from 'react-router-dom';
 import { FaPen, FaRegTrashAlt } from 'react-icons/fa';
 import Swal from 'sweetalert2';
+import { useState } from 'react';
 
 function App() {
-  const chocolates = useLoaderData();
+  const loadedChocolates = useLoaderData();
 
-  const handleDelete = (id) => {
-    console.log(id);
+  const [chocolates, setChocolates] = useState(loadedChocolates);
+
+  const handleDelete = (_id) => {
+    console.log(_id);
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -17,7 +20,7 @@ function App() {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/chocolates/${id}`, {
+        fetch(`http://localhost:5000/chocolates/${_id}`, {
           method: 'DELETE',
         })
           .then((res) => res.json())
@@ -29,6 +32,8 @@ function App() {
                 'Your Chocolate has been deleted.',
                 'success'
               );
+              const remaining = chocolates.filter((choco) => choco._id !== _id);
+              setChocolates(remaining);
             }
           });
       }
